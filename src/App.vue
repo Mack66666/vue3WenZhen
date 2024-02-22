@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Button as vantButton} from 'vant';
-import {useUserStore} from './stores/user'
+import {useUserStore} from './stores'
 const store = useUserStore()
 console.log(store.userInfo);
 </script>
@@ -10,4 +10,4 @@ console.log(store.userInfo);
     <vant-button type="primary" @click="store.removeUserInfo">退出</vant-button>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped></style>./stores/modules/user
