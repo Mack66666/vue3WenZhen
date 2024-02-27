@@ -11,7 +11,7 @@ export default defineConfig({
     //自动导入插件
     Components({
       dts:false,
-      resolvers:[VantResolver()]
+      resolvers:[VantResolver({ importStyle: false })]
     })
   ],
   resolve: {
