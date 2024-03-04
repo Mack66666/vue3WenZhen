@@ -1,10 +1,10 @@
 <template>
-    <van-nav-bar :title="title" fixed :right-text="rightText" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
+    <van-nav-bar :title="title" fixed :right-text="rightText" :left-arrow="showLeftBtn?true:false" @click-left="onClickLeft" @click-right="onClickRight" />
 </template>
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import router from '../router'
-defineProps<{ rightText?: string, title?: string }>()
+defineProps<{ rightText?: string, title?: string, showLeftBtn?:boolean }>()
 const emit  = defineEmits<{ (e: 'onClickRight'): void }>()
 const onClickLeft = () => {
     // 返回上一页

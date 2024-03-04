@@ -1,18 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { mobileRules, passwordRules, codeRules } from '@/utils/rules'
-import { showToast } from 'vant';
+import { showToast, type FormInstance } from 'vant';
 import { passwordLogin, getPhoneCode,codeLogin } from '@/services/user'
 import { useUserStore } from '@/stores/modules/user'
 import { useRoute, useRouter } from 'vue-router';
 import { onUnmounted } from 'vue';
 
 const form = ref({
-  mobile: '',
-  password: '',
+  mobile: '13230000001',
+  password: 'abc12345',
   code: '',
-  agree: false
+  agree: true
 })
+const formDom = ref<FormInstance>()
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
@@ -23,7 +24,7 @@ const getCode = async () => {
   const toSubmit = testFrom('code')
   if (toSubmit == 'true') {
     const res = await getPhoneCode(form.value.mobile,'login')
-    if(res.code == 10000){
+    if(res?.code == 10000){
       const data = res.data as any
       form.value.code = data.code
       time.value = 60
@@ -43,9 +44,7 @@ const getCode = async () => {
 }
 
 const onSubmit = async () => {
-  const toSubmit = testFrom()
-  if (toSubmit == 'true') {
-    console.log(toPass.value);
+  await formDom.value?.validate().then(async () => {
     const res = toPass.value? await passwordLogin(form.value.mobile, form.value.password) : await codeLogin(form.value.mobile, form.value.code)
     if (res.code == 10000) {
       userStore.setUserInfo(res.data)
@@ -56,9 +55,24 @@ const onSubmit = async () => {
         }
       })
     }
-  } else {
-    showToast(toSubmit)
-  }
+  }).catch(()=>showToast('提交错误'))
+ 
+  // fromDom.value?.validate()
+  // const toSubmit = testFrom()
+  // if (toSubmit == 'true') {
+  //   const res = toPass.value? await passwordLogin(form.value.mobile, form.value.password) : await codeLogin(form.value.mobile, form.value.code)
+  //   if (res.code == 10000) {
+  //     userStore.setUserInfo(res.data)
+  //     showToast({
+  //       message: '登录成功',
+  //       onClose: () => {
+  //         router.push(route.query.returnUrl as string || '/user')
+  //       }
+  //     })
+  //   }
+  // } else {
+  //   
+  // }
 
 }
 const testFrom = (type?:string) => {
@@ -93,7 +107,7 @@ onUnmounted(()=>{
       </a>
     </div>
     <!-- 表单 -->
-    <van-form autocomplete="off">
+    <van-form autocomplete="off" ref="formDom">
       <van-field placeholder="请输入手机号" type="tel" v-model="form.mobile" :rules="mobileRules" maxlength="11"></van-field>
       <van-field v-if="toPass" placeholder="请输入密码" type="password" v-model="form.password"
         :rules="passwordRules"></van-field>
@@ -121,13 +135,17 @@ onUnmounted(()=>{
     <div class="login-other">
       <van-divider>第三方登录</van-divider>
       <div class="icon">
-        <img src="@/assets/qq.svg" alt="" />
+        <cp-icon name="login-qq"></cp-icon>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.cp-icon{
+    width: 3em;
+    height: 3em;
+}
 .login {
   &-page {
     padding-top: 46px;
