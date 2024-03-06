@@ -44,6 +44,7 @@ type patient ={
   gender:number,
   genderValue:string,
   age:number,
-  id:string
+  id?:string
 }
 export type patientList = patient[]
+export type addPatient = Omit<patient, 'genderValue'|'age'>

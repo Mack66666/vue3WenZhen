@@ -4,13 +4,14 @@
 <script lang="ts" setup>
 import { onMounted } from 'vue';
 import router from '../router'
-defineProps<{ rightText?: string, title?: string, showLeftBtn?:boolean }>()
+const props =  defineProps<{ rightText?: string, title?: string, showLeftBtn?:boolean , back?:()=>{}}>()
 const emit  = defineEmits<{ (e: 'onClickRight'): void }>()
 const onClickLeft = () => {
     // 返回上一页
     // history.back();
     // history：可以获取到路由的历史信息，包括当前页面的URL、前一个页面的URL等。
     // console.log(history);
+    if(props.back) return props.back()
     if(history.state?.back){
         history.back()
     }else{
